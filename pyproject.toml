@@ -1,0 +1,31 @@
+[project]
+name = "rawget"
+version = "0.1.0"
+authors = [{ name = "MJ Anglin", email = "contact@mjanglin.com" }]
+maintainers = [{ name = "MJ Anglin", email = "contact@mjanglin.com" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Topic :: Utilities :: File Downloading",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+description = "A lightweight CLI tool for downloading files from a URL."
+readme = { content-type = "text/markdown", file = "README.md" }
+license = { file = "LICENSE" }
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+rawget = "src.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
