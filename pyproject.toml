@@ -13,12 +13,18 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
-    "Topic :: Utilities :: File Downloading",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 description = "A lightweight CLI tool for downloading files from a URL."
 readme = { content-type = "text/markdown", file = "README.md" }
 license = { file = "LICENSE" }
+
+[project.urls]
+homepage = "https://github.com/clxrityy/rawget"
+issues = "https://github.com/clxrityy/rawget/issues"
+
+[project.optional-dependencies]
+dev = ["twine", "build"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
