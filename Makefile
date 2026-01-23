@@ -5,14 +5,12 @@
 BIN := venv/bin
 PYTHON := $(BIN)/python
 PIP := $(BIN)/pip
-RAWGET := $(BIN)/rawget
 PRINTF_FORMAT := "  %-25s %s\n"
 
 help:
 	@printf $(PRINTF_FORMAT) "help" "Show this help message"
 	@printf $(PRINTF_FORMAT) "venv" "Create a virtual environment"
 	@printf $(PRINTF_FORMAT) "install" "Install the package in editable mode with dev dependencies"
-	@printf $(PRINTF_FORMAT) "test" "Run tests"
 	@printf $(PRINTF_FORMAT) "build" "Build the package"
 	@printf $(PRINTF_FORMAT) "clean" "Clean up build artifacts"
 	@printf $(PRINTF_FORMAT) "publish" "Publish the package to PyPI"
@@ -26,9 +24,6 @@ venv:
 
 install: venv
 	@$(PIP) install -e ".[dev]"
-
-test: venv
-	@$(RAWGET) $(ARGS) || true
 
 build:
 	@$(PYTHON) -m build
