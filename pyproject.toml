@@ -24,7 +24,7 @@ homepage = "https://github.com/clxrityy/rawget"
 issues = "https://github.com/clxrityy/rawget/issues"
 
 [project.optional-dependencies]
-dev = ["twine", "build"]
+dev = ["twine", "build", "pytest"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -35,3 +35,6 @@ rawget = "src.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
