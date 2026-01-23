@@ -46,7 +46,7 @@ publish: build test
 test-publish: build test
 	@$(PYTHON) -m twine upload --repository testpypi dist/*
 
-release: clean build test publish
+release: clean install build test publish
 
 test-install: venv
 	@$(PIP) install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ rawget
