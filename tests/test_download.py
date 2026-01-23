@@ -6,7 +6,6 @@ from conftest import test_download
 def test_get_default_download_dir():
     dir_path = get_default_download_dir()
     assert dir_path is not None
-    assert dir_path.exists()
     assert dir_path.is_dir()
 
 png_url = "https://avatars.githubusercontent.com/u/97744702?v=4"
