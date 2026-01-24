@@ -89,48 +89,60 @@ def download_file(url: str, output = None):
                 ext = f".{ext}"
 
         # Decide destination
+        download_dir = get_default_download_dir()
+        download_dir.mkdir(parents=True, exist_ok=True)
+
+        # Default filename derived from URL
+        default_filename = Path(url).name or "download"
+
         if not output:
-            download_dir = get_default_download_dir()
-            download_dir.mkdir(parents=True, exist_ok=True)
-            filename = Path(url).name
+            filename = default_filename
             filepath = download_dir / filename
-        elif output.startswith("/"):  # Absolute path
-            cleaned = output.rstrip("/")
-            # Case: only a leading slash and a filename -> treat as Downloads
-            if "/" not in cleaned[1:]:
-                download_dir = get_default_download_dir()
-                download_dir.mkdir(parents=True, exist_ok=True)
-                filename = Path(cleaned).name or Path(url).name
-                filepath = download_dir / filename
-            else:
-                output_path = Path(cleaned)
-                if output.endswith("/"):
-                    output_path.mkdir(parents=True, exist_ok=True)
-                    filename = Path(url).name
-                    filepath = output_path / filename
-                else:
-                    output_path.parent.mkdir(parents=True, exist_ok=True)
-                    filepath = output_path
         else:
-            # relative: place inside default Downloads
-            base_dir = get_default_download_dir()
-            output_path = (base_dir / output.rstrip("/"))
-            if output.endswith("/"):
+            # Treat any user-provided output as a path within the download directory.
+            # This avoids allowing arbitrary absolute paths while preserving relative structure.
+            raw = output.rstrip("/")
+            # If output ends with "/", treat it as a directory under the download directory.
+            is_dir = output.endswith("/")
+
+            # Remove a single leading slash so absolute-looking paths are still rooted in download_dir.
+            # e.g., "/subdir/file" -> "subdir/file"
+            if raw.startswith("/"):
+                raw = raw.lstrip("/")
+
+            output_path = download_dir / raw if raw else download_dir
+
+            if is_dir:
+                # Ensure directory exists; file will be named from URL.
                 output_path.mkdir(parents=True, exist_ok=True)
-                filename = Path(url).name
+                filename = default_filename
                 filepath = output_path / filename
             else:
+                # raw may include directories and/or filename under download_dir.
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 filepath = output_path
 
-        # Apply extension if missing
-        if ext and not filepath.name.endswith(ext):
-            filepath = filepath.with_suffix(ext)
+        # Normalize and ensure the final path stays within download_dir
+        resolved_base = download_dir.resolve()
+        resolved_path = filepath.resolve()
 
-        with open(filepath, "wb") as f:
+        if hasattr(resolved_path, "is_relative_to"):
+            if not resolved_path.is_relative_to(resolved_base):
+                raise ValueError(f"Refusing to write outside download directory: {resolved_path}")
+        else:
+            try:
+                resolved_path.relative_to(resolved_base)
+            except ValueError:
+                raise ValueError(f"Refusing to write outside download directory: {resolved_path}")
+
+        # Apply extension if missing
+        if ext and not resolved_path.name.endswith(ext):
+            resolved_path = resolved_path.with_suffix(ext)
+
+        with open(resolved_path, "wb") as f:
             f.write(data)
 
-        print(f"Downloaded {url} to {filepath}")
+        print(f"Downloaded {url} to {resolved_path}")
 
     except Exception as e:
         print(f"Failed to download from URL {url}\n\n{e}")
