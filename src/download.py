@@ -10,7 +10,25 @@ def get_default_download_dir():
     # Linux (XDG spec)
     xdg = os.environ.get("XDG_DOWNLOAD_DIR")
     if xdg:
-        return Path(xdg).expanduser()
+        try:
+            # Resolve to an absolute, normalized path and ensure it stays within the user's home directory.
+            home = Path.home().resolve()
+            candidate = Path(xdg).expanduser().resolve()
+            # On Python 3.9+, Path has is_relative_to; fall back to relative_to for older versions.
+            is_subpath = False
+            if hasattr(candidate, "is_relative_to"):
+                is_subpath = candidate.is_relative_to(home)
+            else:
+                try:
+                    candidate.relative_to(home)
+                    is_subpath = True
+                except ValueError:
+                    is_subpath = False
+            if is_subpath:
+                return candidate
+        except Exception:
+            # On any error, ignore XDG_DOWNLOAD_DIR and use the default below.
+            pass
 
     # macOS / Windows / fallback
     return Path.home() / "Downloads"
