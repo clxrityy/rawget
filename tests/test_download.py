@@ -1,7 +1,7 @@
 import tempfile
 from pathlib import Path
 from src.download import get_default_download_dir
-from conftest import test_download
+from conftest import test_download, mock_download_dir
 
 def test_get_default_download_dir():
     dir_path = get_default_download_dir()
@@ -14,8 +14,8 @@ webp_url = "https://github.com/clxrityy/clxrity.xyz/blob/wav/public/assets/img/m
 
 # Test downloading a PNG file with default behavior
 #   - The file should be placed in the default download directory
-def test_download_file_default_behavior(capsys):
-    expected_download = Path(get_default_download_dir()) / "default.png"
+def test_download_file_default_behavior(capsys, mock_download_dir):
+    expected_download = mock_download_dir / "default.png"
     opts = {
         "url": png_url,
         "file_name": "default.png",
@@ -27,8 +27,8 @@ def test_download_file_default_behavior(capsys):
 
 # Test downloading a PNG file with a leading slash in the filename
 #   - The leading slash should be ignored and the file should be placed in the default download directory
-def test_download_file_ignore_leading_slash(capsys):
-    expected_download = Path(get_default_download_dir()) / "default.png"
+def test_download_file_ignore_leading_slash(capsys, mock_download_dir):
+    expected_download = mock_download_dir / "default.png"
     opts = {
         "url": png_url,
         "file_name": "/default.png",
@@ -39,10 +39,9 @@ def test_download_file_ignore_leading_slash(capsys):
 
 # Test downloading a PNG file to a temporary directory
 #   - The file should be placed in the specified temporary directory
-def test_download_file_temp_dir(capsys):
-    temp_dir = tempfile.gettempdir()
-    output_path = f"{temp_dir}/default.png"
-    expected_download = Path(output_path)
+def test_download_file_temp_dir(capsys, mock_download_dir):
+    output_path = "subdir/default.png"
+    expected_download = mock_download_dir / output_path
     opts = {
         "url": png_url,
         "file_name": output_path,
@@ -52,8 +51,8 @@ def test_download_file_temp_dir(capsys):
     test_download(capsys, opts)
 
 # Test downloading MP3 file
-def test_download_mp3_file(capsys):
-    expected_download = Path(get_default_download_dir()) / "default.mp3"
+def test_download_mp3_file(capsys, mock_download_dir):
+    expected_download = mock_download_dir / "default.mp3"
     opts = {
         "url": mp3_url,
         "file_name": "default.mp3",
@@ -63,8 +62,8 @@ def test_download_mp3_file(capsys):
     test_download(capsys, opts)
 
 # Test downloading WAV file
-def test_download_wav_file(capsys):
-    expected_download = Path(get_default_download_dir()) / "default.wav"
+def test_download_wav_file(capsys, mock_download_dir):
+    expected_download = mock_download_dir / "default.wav"
     opts = {
         "url": wav_url,
         "file_name": "default.wav",
@@ -74,8 +73,8 @@ def test_download_wav_file(capsys):
     test_download(capsys, opts)
 
 # Test downloading WEBP file
-def test_download_webp_file(capsys):
-    expected_download = Path(get_default_download_dir()) / "default.webp"
+def test_download_webp_file(capsys, mock_download_dir):
+    expected_download = mock_download_dir / "default.webp"
     opts = {
         "url": webp_url,
         "file_name": "default.webp",
