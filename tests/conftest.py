@@ -1,6 +1,8 @@
 import pytest
 import os
+import tempfile
 from pathlib import Path
+from unittest.mock import patch
 from src.download import download_file
 
 options = {
@@ -9,6 +11,18 @@ options = {
     "expected_suffix": "",
     "expected_download": Path("")
 }
+
+@pytest.fixture
+def temp_download_dir():
+    """Create a temporary directory for downloading files during tests."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield Path(tmpdir)
+
+@pytest.fixture
+def mock_download_dir(temp_download_dir):
+    """Mock get_default_download_dir to return the temporary download directory."""
+    with patch("src.download.get_default_download_dir", return_value=temp_download_dir):
+        yield temp_download_dir
 
 # Helper function to test downloading files
 #   - The file should be placed in the expected download location
