@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 import ipaddress
 import socket
-from resolvers import html_resolve
+from .resolvers import html_resolve
 
 def process_url(url: str) -> str:
     #  HTML resolver first
