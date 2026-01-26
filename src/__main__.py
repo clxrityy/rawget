@@ -7,6 +7,7 @@ No external dependencies.
 """
 import sys
 from .download import download_file
+from .process import process_url
 
 def main():
     if len(sys.argv) < 2:
@@ -16,7 +17,9 @@ def main():
     url = sys.argv[1]
     output = sys.argv[2] if len(sys.argv) >= 3 else None
 
-    download_file(url, output)
+    final_url = process_url(url)
+
+    download_file(final_url, output)
 
 if __name__ == "__main__":
     main()
