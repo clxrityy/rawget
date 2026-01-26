@@ -1,7 +1,5 @@
-import tempfile
-from pathlib import Path
 from src.download import get_default_download_dir
-from conftest import test_download, mock_download_dir
+from conftest import test_download
 
 def test_get_default_download_dir():
     dir_path = get_default_download_dir()
