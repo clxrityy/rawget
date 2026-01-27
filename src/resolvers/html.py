@@ -18,7 +18,7 @@ SRC_REGEX = re.compile(
     re.IGNORECASE # Case-insensitive matching
 )
 
-def resolve(url, timout=10):
+def resolve(url, timeout=10):
     """
     Attempts to extract direct media URLs from an HTML page.
     Returns a list of absolute URLs.
@@ -28,7 +28,7 @@ def resolve(url, timout=10):
             url,
             headers={"User-Agent": "rawget/0.1"}
         )
-        with urllib.request.urlopen(req, timeout=timout) as res:
+        with urllib.request.urlopen(req, timeout=timeout) as res:
             content_type = res.headers.get("Content-Type", "")
             if "text/html" not in content_type:
                 return []
