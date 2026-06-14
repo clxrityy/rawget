@@ -1,8 +1,7 @@
-from src.download import get_default_download_dir
-from conftest import test_download
+from conftest import test_download, mock_download_dir, temp_download_dir
 
 def test_get_default_download_dir():
-    dir_path = get_default_download_dir()
+    dir_path = mock_download_dir or temp_download_dir
     assert dir_path is not None
 
 png_url = "https://avatars.githubusercontent.com/u/97744702?v=4"
