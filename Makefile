@@ -72,3 +72,6 @@ clean:
 	@find . -name "*.egg-info" -exec rm -rf {} +
 	@rm -rf .pytest_cache
 	rm -rf dist
+
+test-workflow:
+	@act --container-architecture linux/amd64
