@@ -7,11 +7,15 @@ PYTHON := $(BIN)/python
 PIP := $(BIN)/pip
 PRINTF_FORMAT := "  %-25s %s\n"
 PYTEST := $(BIN)/pytest
+RAWGET := $(BIN)/rawget
+ARGS := $(filter-out $@,$(MAKECMDGOALS))
 
 help:
 	@printf $(PRINTF_FORMAT) "help" "Show this help message"
 	@printf $(PRINTF_FORMAT) "venv" "Create a virtual environment"
 	@printf $(PRINTF_FORMAT) "install" "Install the package in editable mode with dev dependencies"
+	@printf $(PRINTF_FORMAT) "install-local" "Install the package in editable mode without dev dependencies"
+	@printf $(PRINTF_FORMAT) "run" "Run the rawget command with arguments (e.g., make run ARGS=\"https://example.com\")"
 	@printf $(PRINTF_FORMAT) "build" "Build the package"
 	@printf $(PRINTF_FORMAT) "clean" "Clean up build artifacts"
 	@printf $(PRINTF_FORMAT) "test" "Run tests"
@@ -26,6 +30,12 @@ venv:
 
 install: venv
 	@$(PIP) install -e ".[dev]"
+
+install-local: install
+	@$(PIP) install -e .
+
+run:
+	@$(RAWGET) $(ARGS)
 
 build:
 	@$(PYTHON) -m build
