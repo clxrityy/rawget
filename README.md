@@ -14,7 +14,7 @@ A lightweight CLI tool for downloading files from a URL.
 - [x] Automatic file extension detection based on content.
 - [x] Works on all major platforms (Linux, macOS, Windows)
 
-> Note: Streaming platform downloads (e.g., YouTube) are not supported.
+> Note: Streaming platform downloads (e.g., YouTube) are not supported (yet). This tool is designed for direct file downloads.
 
 ### Installation
 
