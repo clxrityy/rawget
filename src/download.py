@@ -1,3 +1,4 @@
+from urllib.parse import urlparse, unquote
 import os
 import urllib.request
 from .extension import detect_file_extension
@@ -49,11 +50,8 @@ def download_file(url: str, output = None):
         download_dir = get_default_download_dir()
         download_dir.mkdir(parents=True, exist_ok=True)
 
-        # Default filename derived from URL
-        default_filename = Path(url).name or "download"
-
         if not output:
-            filename = default_filename
+            filename = safe_filename_from_url(url)
             filepath = download_dir / filename
         else:
             # Treat any user-provided output as a path within the download directory.
@@ -72,7 +70,7 @@ def download_file(url: str, output = None):
             if is_dir:
                 # Ensure directory exists; file will be named from URL.
                 output_path.mkdir(parents=True, exist_ok=True)
-                filename = default_filename
+                filename = safe_filename_from_url(url)
                 filepath = output_path / filename
             else:
                 # raw may include directories and/or filename under download_dir.
@@ -86,7 +84,7 @@ def download_file(url: str, output = None):
         if hasattr(resolved_path, "is_relative_to"):
             if not resolved_path.is_relative_to(resolved_base):
                 raise ValueError(f"Refusing to write outside download directory: {resolved_path}")
-        else:
+        elif not os.path.commonpath([resolved_base, resolved_path]) == str(resolved_base):
             try:
                 resolved_path.relative_to(resolved_base)
             except ValueError:
@@ -96,11 +94,36 @@ def download_file(url: str, output = None):
         if ext and not resolved_path.name.endswith(ext):
             resolved_path = resolved_path.with_suffix(ext)
 
+        resolved_path = unique_path(resolved_path.as_posix())
+
         with open(resolved_path, "wb") as f:
             f.write(data)
 
-        print(f"Downloaded {url} to {resolved_path}")
+        print(f"Downloaded {resolved_path}.")
 
     except Exception as e:
         print(f"Failed to download from URL {url}\n\n{e}")
         raise e
+
+def safe_filename_from_url(url: str) -> str:
+    parsed = urlparse(url)
+
+    # take only path, ignore query string
+    name = os.path.basename(parsed.path)
+
+    # fallback if empty
+    if not name:
+        name = "download"
+
+    return unquote(name)
+
+def unique_path(path: str) -> str:
+    base, ext = os.path.splitext(path)
+    i = 1
+
+    candidate = path
+    while os.path.exists(candidate):
+        candidate = f"{base}_{i}{ext}"
+        i += 1
+
+    return candidate
