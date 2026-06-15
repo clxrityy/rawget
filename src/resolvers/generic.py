@@ -1,6 +1,6 @@
 import re
 import urllib.request
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 # Common media extensions
 MEDIA_EXTENSIONS = (
@@ -18,7 +18,7 @@ SRC_REGEX = re.compile(
     re.IGNORECASE # Case-insensitive matching
 )
 
-def resolve(url, timeout=10):
+def generic_resolve(url, timeout=10) -> list[str]:
     """
     Attempts to extract direct media URLs from an HTML page.
     Returns a list of absolute URLs.
