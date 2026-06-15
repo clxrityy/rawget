@@ -8,7 +8,7 @@ No external dependencies.
 import sys
 import argparse
 
-from .selection import classify, select_default
+from .selection import classify
 from .download import download_file
 from .process import process_url
 
@@ -17,7 +17,7 @@ parser.add_argument("url", help="URL of the file to download")
 parser.add_argument("output", nargs="?", help="Optional output file name")
 parser.add_argument("--list", action="store_true", help="List available files instead of downloading")
 parser.add_argument("--pick", type=int, help="Pick a specific file from the list by index")
-parser.add_argument("--type", choices=["video", "audio", "image", "other"], help="Choose the type of file to download")
+parser.add_argument("--type", choices=["video", "audio", "image", "other", "icon"], help="Choose the type of file to download")
 parser.add_argument("--largest", action="store_true", help="Download the largest file available")
 parser.add_argument("--smallest", action="store_true", help="Download the smallest file available")
 
