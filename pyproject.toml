@@ -27,7 +27,7 @@ classifiers = [
 description = "A lightweight CLI tool for downloading files from a URL."
 readme = { content-type = "text/markdown", file = "README.md" }
 license = { file = "LICENSE" }
-keywords = ["download", "cli", "python", "url", "resolver", "media", "file"]
+keywords = ["download", "cli", "python", "url", "resolver", "media", "file", "downloader", "yt-dlp", "youtube", "video", "audio", "content", "fetcher", "retriever", "utility", "tool", "command-line", "interface", "lightweight", "fast", "efficient", "cross-platform", "open-source"]
 
 [project.urls]
 homepage = "https://github.com/clxrityy/rawget"
