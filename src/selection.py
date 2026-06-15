@@ -4,7 +4,8 @@ import os
 
 VIDEO_EXTS = {".mp4", ".webm", ".mov"}
 AUDIO_EXTS = {".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a"}
-IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".icns", ".svg", ".tiff", ".bmp", ".avif", ".heic", ".pdf"}
+IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".tiff", ".bmp", ".avif", ".heic", ".pdf"}
+ICON_EXTS = {".ico", ".icon"}
 
 def classify(url: str) -> str:
     """
@@ -17,12 +18,15 @@ def classify(url: str) -> str:
         return "audio"
     if ext in IMAGE_EXTS:
         return "image"
+    if ext in ICON_EXTS:
+        return "icon"
     return "other"
 
 PREFERENCE_ORDER = {
-    "video": 3,
-    "audio": 2,
-    "image": 1,
+    "video": 100,
+    "audio": 50,
+    "icon": -10,
+    "image": 10,
     "other": 0
 }
 
@@ -59,4 +63,6 @@ def select_default(urls: list[str]) -> str:
 
     # Highest score first, then largest file
     ranked.sort(reverse=True)
-    return ranked[0][2]
+    winner = ranked[0][2]
+
+    return winner
