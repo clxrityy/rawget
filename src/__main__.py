@@ -66,7 +66,7 @@ def main():
     # Default selection logic
     else:
         from .selection import select_default
-        final_url = select_default(urls)
+        final_url = select_default([u for u in urls if classify(u) != "icon"])
 
     # Download
     if final_url:
