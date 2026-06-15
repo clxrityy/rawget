@@ -29,7 +29,7 @@ def mock_download_dir(temp_download_dir):
 #   - The file should have the correct extension
 #   - The file should have non-zero size
 #   - The file should be removed after the test
-@pytest.mark.skip
+@pytest.mark.skip(reason="Requires network access and file system operations")
 def test_download(capsys: pytest.CaptureFixture[str], opts: dict = options):
 
     url = opts["url"]

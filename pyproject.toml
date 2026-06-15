@@ -1,34 +1,41 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "rawget"
-version = "0.1.0"
+version = "0.11.1"
+requires-python = ">= 3.10"
+dependencies = [
+    "yt-dlp"
+]
 authors = [{ name = "MJ Anglin", email = "contact@mjanglin.com" }]
 maintainers = [{ name = "MJ Anglin", email = "contact@mjanglin.com" }]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 description = "A lightweight CLI tool for downloading files from a URL."
 readme = { content-type = "text/markdown", file = "README.md" }
 license = { file = "LICENSE" }
+keywords = ["download", "cli", "python", "url", "resolver", "media", "file", "downloader", "yt-dlp", "youtube", "video", "audio", "content", "fetcher", "retriever", "utility", "tool", "command-line", "interface", "lightweight", "fast", "efficient", "cross-platform", "open-source"]
 
 [project.urls]
 homepage = "https://github.com/clxrityy/rawget"
 issues = "https://github.com/clxrityy/rawget/issues"
+repository = "https://github.com/clxrityy/rawget"
 
 [project.optional-dependencies]
 dev = ["twine", "build", "pytest"]
-
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
 
 [project.scripts]
 rawget = "src.__main__:main"
