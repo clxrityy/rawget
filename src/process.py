@@ -1,14 +1,21 @@
 from urllib.parse import urlparse
 import ipaddress
 import socket
-from .resolvers import html_resolve
+from .resolvers import resolve
 
-def process_url(url: str) -> str:
+def process_url(url: str) -> list[str]:
     #  HTML resolver first
-    resolved = html_resolve(url)
+    # resolved = html_resolve(url)
+    # if resolved:
+    #     return resolved
+    # return [url]
+    resolved = resolve(url)
+    # print("Resolved URLs:")
+    # for item in resolved[:20]:  # Show only the first 20 for brevity
+    #     print(f" - {item}")
     if resolved:
-        return resolved[0]
-    return url
+        return resolved
+    return [url]
 
 def is_safe_url(url: str) -> bool:
     """
