@@ -4,6 +4,10 @@ import socket
 from .resolvers import resolve
 
 def process_url(url: str) -> list[str]:
+    # Reject unsafe input URL before any outbound request.
+    if not is_safe_url(url):
+        return []
+
     #  HTML resolver first
     # resolved = html_resolve(url)
     # if resolved:
@@ -14,7 +18,7 @@ def process_url(url: str) -> list[str]:
     # for item in resolved[:20]:  # Show only the first 20 for brevity
     #     print(f" - {item}")
     if resolved:
-        return resolved
+        return [item for item in resolved if is_safe_url(item)]
     return [url]
 
 def is_safe_url(url: str) -> bool:
