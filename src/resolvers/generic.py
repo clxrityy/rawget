@@ -1,6 +1,6 @@
 import re
 import urllib.request
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlunparse
 
 # Common media extensions
 MEDIA_EXTENSIONS = (
@@ -24,9 +24,32 @@ def generic_resolve(url, timeout=10) -> list[str]:
     Returns a list of absolute URLs.
     """
     try:
+        parsed = urlparse(url)
+        headers = {"User-Agent": "rawget/0.1"}
+        request_url = url
+
+        if parsed.username:
+            host_header = parsed.username
+            if parsed.port:
+                host_header = f"{host_header}:{parsed.port}"
+            headers["Host"] = host_header
+
+            ip_host = parsed.hostname or ""
+            netloc = ip_host
+            if parsed.port:
+                netloc = f"{netloc}:{parsed.port}"
+            request_url = urlunparse((
+                parsed.scheme,
+                netloc,
+                parsed.path,
+                parsed.params,
+                parsed.query,
+                parsed.fragment,
+            ))
+
         req = urllib.request.Request(
-            url,
-            headers={"User-Agent": "rawget/0.1"}
+            request_url,
+            headers=headers
         )
         with urllib.request.urlopen(req, timeout=timeout) as res:
             content_type = res.headers.get("Content-Type", "")
