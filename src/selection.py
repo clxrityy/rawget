@@ -70,7 +70,7 @@ def content_length(url: str) -> int:
         print(f"Error fetching content length for {url}: {e}")
         return 0
 
-def select_default(urls: list[str]) -> str:
+def select_default(urls: list[str]) -> str | None:
     """
     Selects the best URL based on type and size. It ranks URLs first by their media type score and then by content length, preferring higher scores and larger files.
     """
