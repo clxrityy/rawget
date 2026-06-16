@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 import urllib.request
 import os
+from .process import is_safe_url
 
 VIDEO_EXTS = {".mp4", ".webm", ".mov"}
 AUDIO_EXTS = {".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a"}
@@ -41,6 +42,9 @@ def content_length(url: str) -> int:
     """
     Retrieves the Content-Length of the URL for size-based selection.
     """
+    if not is_safe_url(url):
+        print(f"Rejected unsafe URL for content length: {url}")
+        return 0
     try:
         req = urllib.request.Request(url, method="HEAD")
         with urllib.request.urlopen(req, timeout=5) as response:
@@ -55,11 +59,16 @@ def select_default(urls: list[str]) -> str:
     """
     ranked = []
     for url in urls:
+        if not is_safe_url(url):
+            continue
         ranked.append((
             score(url),
             content_length(url),
             url
         ))
+
+    if not ranked:
+        return None
 
     # Highest score first, then largest file
     ranked.sort(reverse=True)
