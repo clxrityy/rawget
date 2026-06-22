@@ -32,26 +32,45 @@ def get_default_download_dir():
     # macOS / Windows / fallback
     return Path.home() / "Downloads"
 
+def build_request(url: str):
+    return urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": (
+                "com.google.android.apps.youtube.vr/"
+                "1.61.48 (Linux; U; Android 14)"
+            )
+        }
+    )
+
 def download_file(url: str, output = None):
     try:
         if not is_safe_url(url):
             raise ValueError(f"Refusing to download from unsafe or invalid URL: {url}")
 
-        with urllib.request.urlopen(url) as response:
-            content_type = response.headers.get('Content-Type', '')
+        with urllib.request.urlopen(build_request(url)) as response:
+            content_type = response.headers.get("Content-Type", "")
+            content_disposition = response.headers.get("Content-Disposition")
+
+            server_filename = (
+                filename_from_content_disposition(content_disposition)
+                if content_disposition
+                else None
+            )
+
+            if server_filename:
+                server_filename = os.path.basename(server_filename)
+
             data = response.read()
 
             ext = detect_file_extension(data, url, content_type)
-            # ensure ext starts with a dot
-            if ext and not ext.startswith("."):
-                ext = f".{ext}"
 
         # Decide destination
         download_dir = get_default_download_dir()
         download_dir.mkdir(parents=True, exist_ok=True)
 
         if not output:
-            filename = safe_filename_from_url(url)
+            filename = server_filename or safe_filename_from_url(url)
             filepath = download_dir / filename
         else:
             # Treat any user-provided output as a path within the download directory.
@@ -70,7 +89,7 @@ def download_file(url: str, output = None):
             if is_dir:
                 # Ensure directory exists; file will be named from URL.
                 output_path.mkdir(parents=True, exist_ok=True)
-                filename = safe_filename_from_url(url)
+                filename = server_filename or safe_filename_from_url(url)
                 filepath = output_path / filename
             else:
                 # raw may include directories and/or filename under download_dir.
@@ -127,3 +146,32 @@ def unique_path(path: str) -> str:
         i += 1
 
     return candidate
+
+def filename_from_content_disposition(header: str | None):
+    """
+    Extracts the filename from a Content-Disposition header.
+
+    Args:
+        header (str | None): The Content-Disposition header value.
+
+    Returns:
+        str | None: The extracted filename, or None if not found.
+    """
+    if not header:
+        return None
+
+    parts = [p.strip() for p in header.split(";")]
+
+    for part in parts:
+        if part.startswith("filename*="):
+            value = part.split("=", 1)[1] # split only on the first "="
+            if "''" in value:
+                _, value = value.split("''", 1) # split only on the first "''"
+            
+            return unquote(value)
+    
+    for part in parts:
+        if part.startswith("filename="):
+            return part.split("=", 1)[1].strip('"') # split only on the first "=" and remove quotes
+
+    return None
